@@ -1,0 +1,34 @@
+[project]
+name = "clearledger"
+version = "1.0.0"
+description = "Turns vendor invoice PDFs into explainable processing decisions against purchase-order data."
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = [".venv", "frontend", "runtime-data", "data/samples"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+ignore = [
+  # FastAPI's dependency injection is expressed as a call in the argument
+  # default. It is the framework's documented idiom, not a mutable-default bug.
+  "B008",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# The scripts add the backend to sys.path before importing from it, so their
+# imports cannot all sit at the top of the file.
+"scripts/*.py" = ["E402"]
+# Tests read better with long, sentence-like names and literal expected values.
+"backend/tests/*.py" = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests"]
+pythonpath = ["backend"]
+addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning"]

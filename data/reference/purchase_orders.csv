@@ -1,0 +1,8 @@
+po_number,vendor_code,currency,approved_total,status,description
+PO-1001,V-1001,INR,11800.00,open,Ergonomic office chairs and desks - happy path scenario
+PO-1002,V-1001,INR,13000.00,open,Workstation refresh - arithmetic inconsistency scenario (E4)
+PO-1003,V-1001,INR,20000.00,closed,Stationery annual contract - closed purchase order for policy tests
+PO-2001,V-1002,INR,100000.00,open,Cloud hosting Q3 - split invoice scenario (E2)
+PO-3001,V-1003,INR,23600.00,open,Housekeeping services - Bengaluru site (E3 candidate)
+PO-3002,V-1003,INR,23600.00,open,Housekeeping services - Pune site (E3 candidate)
+PO-4001,V-1004,INR,50000.00,open,Freight forwarding - blocked vendor policy test

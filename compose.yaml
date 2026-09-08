@@ -1,0 +1,48 @@
+# One command to run the whole application:
+#
+#   cp .env.example .env      # then set DEMO_USERNAME / DEMO_PASSWORD
+#   docker compose up --build
+#
+# The named volume is what makes processed runs survive a rebuild. Removing it
+# (docker compose down -v) is the only supported way to reset the demo.
+
+services:
+  clearledger:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: clearledger:latest
+    ports:
+      - "${PORT:-8000}:8000"
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+      PORT: 8000
+      DATA_DIR: /data
+
+      # Reviewer credentials. A production profile refuses to start without
+      # them, which is deliberate: invoice data must not be world-readable.
+      DEMO_USERNAME: ${DEMO_USERNAME:?set DEMO_USERNAME in .env}
+      DEMO_PASSWORD: ${DEMO_PASSWORD:?set DEMO_PASSWORD in .env, at least 12 characters}
+
+      # Browser origins allowed to perform mutations. Add your deployed URL.
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:8000,http://127.0.0.1:8000}
+
+      # Extraction. "rules" is deterministic and needs nothing external.
+      EXTRACTION_PROVIDER: ${EXTRACTION_PROVIDER:-rules}
+      ALLOW_RULES_FALLBACK: ${ALLOW_RULES_FALLBACK:-false}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-}
+      LLM_BASE_URL: ${LLM_BASE_URL:-}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_MODEL: ${LLM_MODEL:-}
+
+      MAX_UPLOAD_MB: ${MAX_UPLOAD_MB:-10}
+      MAX_PDF_PAGES: ${MAX_PDF_PAGES:-10}
+      MAX_QUEUE_DEPTH: ${MAX_QUEUE_DEPTH:-10}
+      RATE_LIMIT_PER_MINUTE: ${RATE_LIMIT_PER_MINUTE:-30}
+    volumes:
+      - clearledger-data:/data
+    restart: unless-stopped
+
+volumes:
+  clearledger-data:

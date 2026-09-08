@@ -1,0 +1,322 @@
+{
+  "generated_from_reference_date": "2026-09-01",
+  "warning": "Used by tests and documentation only. The application never reads this file; decisions come from the pipeline.",
+  "samples": [
+    {
+      "id": "happy-path",
+      "filename": "happy-saffron-inv-1001.pdf",
+      "layout": "classic",
+      "scanned": false,
+      "preconditions": [],
+      "expected_decision": "APPROVED",
+      "expected_rule_codes": [
+        "PO_BUDGET_TOLERANCE:pass",
+        "DUPLICATE_IDENTITY:pass"
+      ],
+      "expected_facts": {
+        "vendor_printed_name": "Saffron Office Systems Pvt. Ltd.",
+        "invoice_number": "INV-1001",
+        "invoice_date": "2026-08-24",
+        "currency": "INR",
+        "subtotal": "10000.00",
+        "tax_total": "1800.00",
+        "gross_total": "11800.00",
+        "explicit_po_number": "PO-1001"
+      },
+      "note": "Reserves INR 11,800.00 against PO-1001."
+    },
+    {
+      "id": "e1-duplicate",
+      "filename": "e1-duplicate-rerendered-inv-1001.pdf",
+      "layout": "compact",
+      "scanned": false,
+      "preconditions": [
+        "Run the happy path sample first so an approved identity exists."
+      ],
+      "expected_decision": "BLOCKED",
+      "expected_rule_codes": [
+        "DUPLICATE_IDENTITY:fail"
+      ],
+      "expected_facts": {
+        "vendor_printed_name": "Saffron Office Systems Pvt Ltd",
+        "invoice_number": "inv 1001",
+        "invoice_date": "2026-08-24",
+        "currency": "INR",
+        "subtotal": "10000.00",
+        "tax_total": "1800.00",
+        "gross_total": "11800.00",
+        "explicit_po_number": "PO-1001"
+      },
+      "note": "Re-uploading happy-saffron-inv-1001.pdf itself is blocked by DUPLICATE_FILE instead, which is the byte-identical case."
+    },
+    {
+      "id": "e2-part-1",
+      "filename": "e2-cedar-part-1-40000.pdf",
+      "layout": "compact",
+      "scanned": false,
+      "preconditions": [],
+      "expected_decision": "APPROVED",
+      "expected_rule_codes": [
+        "PO_BUDGET_TOLERANCE:pass"
+      ],
+      "expected_facts": {
+        "vendor_printed_name": "Cedar Cloud Services Pvt Ltd",
+        "invoice_number": "CCS/2026/0041",
+        "invoice_date": "2026-08-11",
+        "currency": "INR",
+        "subtotal": "33898.31",
+        "tax_total": "6101.69",
+        "gross_total": "40000.00",
+        "explicit_po_number": "PO-2001"
+      },
+      "note": "Reserves INR 40,000.00 against PO-2001."
+    },
+    {
+      "id": "e2-part-2",
+      "filename": "e2-cedar-part-2-60000.pdf",
+      "layout": "compact",
+      "scanned": false,
+      "preconditions": [
+        "Run E2 part 1 first."
+      ],
+      "expected_decision": "APPROVED",
+      "expected_rule_codes": [
+        "PO_BUDGET_TOLERANCE:pass"
+      ],
+      "expected_facts": {
+        "vendor_printed_name": "Cedar Cloud Services Pvt Ltd",
+        "invoice_number": "CCS/2026/0042",
+        "invoice_date": "2026-08-18",
+        "currency": "INR",
+        "subtotal": "50847.46",
+        "tax_total": "9152.54",
+        "gross_total": "60000.00",
+        "explicit_po_number": "PO-2001"
+      },
+      "note": "Reserves INR 60,000.00; cumulative commitments become INR 100,000.00."
+    },
+    {
+      "id": "e2-part-3",
+      "filename": "e2-cedar-part-3-1000.pdf",
+      "layout": "compact",
+      "scanned": false,
+      "preconditions": [
+        "Run E2 part 1 and E2 part 2 first."
+      ],
+      "expected_decision": "REVIEW",
+      "expected_rule_codes": [
+        "PO_BUDGET_TOLERANCE:review"
+      ],
+      "expected_facts": {
+        "vendor_printed_name": "Cedar Cloud Services Pvt Ltd",
+        "invoice_number": "CCS/2026/0043",
+        "invoice_date": "2026-08-29",
+        "currency": "INR",
+        "subtotal": "847.46",
+        "tax_total": "152.54",
+        "gross_total": "1000.00",
+        "explicit_po_number": "PO-2001"
+      },
+      "note": "Reserves nothing. Tolerance is min(1% of 100,000.00, 500.00) = INR 500.00."
+    },
+    {
+      "id": "e3-scanned",
+      "filename": "e3-delta-scanned-dfs-7781.pdf",
+      "layout": "statement",
+      "scanned": true,
+      "preconditions": [],
+      "expected_decision": "REVIEW",
+      "expected_rule_codes": [
+        "PO_REFERENCE_PRESENT:review",
+        "PO_RESOLVED:review"
+      ],
+      "expected_facts": {
+        "vendor_printed_name": "DELTA FACILITY SERVICES PVT LTD",
+        "invoice_number": "DFS-7781",
+        "invoice_date": "2026-08-27",
+        "currency": "INR",
+        "subtotal": "20000.00",
+        "tax_total": "3600.00",
+        "gross_total": "23600.00",
+        "explicit_po_number": null
+      },
+      "note": "Selecting PO-3001 or PO-3002 with a reason creates a linked child run that becomes APPROVED."
+    },
+    {
+      "id": "e4-arithmetic",
+      "filename": "e4-saffron-inconsistent-inv-1042.pdf",
+      "layout": "classic",
+      "scanned": false,
+      "preconditions": [],
+      "expected_decision": "REVIEW",
+      "expected_rule_codes": [
+        "ARITHMETIC_TOTALS:review"
+      ],
+      "expected_facts": {
+        "vendor_printed_name": "Saffron Office Systems Pvt. Ltd.",
+        "invoice_number": "INV-1042",
+        "invoice_date": "2026-08-30",
+        "currency": "INR",
+        "subtotal": "10000.00",
+        "tax_total": "1800.00",
+        "gross_total": "13000.00",
+        "explicit_po_number": "PO-1002"
+      },
+      "note": "All three printed values are preserved; nothing is silently corrected."
+    },
+    {
+      "id": "r1-blocked-vendor",
+      "filename": "r1-ironwood-blocked-vendor.pdf",
+      "layout": "classic",
+      "scanned": false,
+      "preconditions": [],
+      "expected_decision": "BLOCKED",
+      "expected_rule_codes": [
+        "VENDOR_STATUS:fail"
+      ],
+      "expected_facts": {
+        "vendor_printed_name": "Ironwood Logistics Pvt Ltd",
+        "invoice_number": "IWL-9001",
+        "invoice_date": "2026-08-26",
+        "currency": "INR",
+        "subtotal": "5000.00",
+        "tax_total": "900.00",
+        "gross_total": "5900.00",
+        "explicit_po_number": "PO-4001"
+      },
+      "note": ""
+    },
+    {
+      "id": "r2-wrong-vendor-po",
+      "filename": "r2-saffron-wrong-vendor-po.pdf",
+      "layout": "classic",
+      "scanned": false,
+      "preconditions": [],
+      "expected_decision": "BLOCKED",
+      "expected_rule_codes": [
+        "PO_VENDOR_MATCH:fail"
+      ],
+      "expected_facts": {
+        "vendor_printed_name": "Saffron Office Systems Pvt. Ltd.",
+        "invoice_number": "INV-1077",
+        "invoice_date": "2026-08-28",
+        "currency": "INR",
+        "subtotal": "5000.00",
+        "tax_total": "900.00",
+        "gross_total": "5900.00",
+        "explicit_po_number": "PO-2001"
+      },
+      "note": ""
+    },
+    {
+      "id": "r3-missing-number",
+      "filename": "r3-saffron-missing-invoice-number.pdf",
+      "layout": "statement",
+      "scanned": false,
+      "preconditions": [],
+      "expected_decision": "REVIEW",
+      "expected_rule_codes": [
+        "FIELDS_PRESENT:review"
+      ],
+      "expected_facts": {
+        "vendor_printed_name": "Saffron Office Systems Pvt. Ltd.",
+        "invoice_number": null,
+        "invoice_date": "2026-08-23",
+        "currency": "INR",
+        "subtotal": "2000.00",
+        "tax_total": "360.00",
+        "gross_total": "2360.00",
+        "explicit_po_number": "PO-1001"
+      },
+      "note": ""
+    },
+    {
+      "id": "r4-currency",
+      "filename": "r4-cedar-usd-currency.pdf",
+      "layout": "compact",
+      "scanned": false,
+      "preconditions": [],
+      "expected_decision": "REVIEW",
+      "expected_rule_codes": [
+        "CURRENCY_SUPPORTED:review"
+      ],
+      "expected_facts": {
+        "vendor_printed_name": "Cedar Cloud Services Pvt Ltd",
+        "invoice_number": "CCS/2026/0051",
+        "invoice_date": "2026-08-25",
+        "currency": "USD",
+        "subtotal": "1000.00",
+        "tax_total": "0.00",
+        "gross_total": "1000.00",
+        "explicit_po_number": "PO-2001"
+      },
+      "note": ""
+    },
+    {
+      "id": "r5-credit-note",
+      "filename": "r5-saffron-credit-note.pdf",
+      "layout": "classic",
+      "scanned": false,
+      "preconditions": [],
+      "expected_decision": "REVIEW",
+      "expected_rule_codes": [
+        "DOC_KIND_SUPPORTED:review"
+      ],
+      "expected_facts": {
+        "vendor_printed_name": "Saffron Office Systems Pvt. Ltd.",
+        "invoice_number": "CN-2201",
+        "invoice_date": "2026-08-31",
+        "currency": "INR",
+        "subtotal": "1900.00",
+        "tax_total": "342.00",
+        "gross_total": "2242.00",
+        "explicit_po_number": "PO-1001"
+      },
+      "note": ""
+    },
+    {
+      "id": "r6-prompt-injection",
+      "filename": "r6-saffron-prompt-injection.pdf",
+      "layout": "classic",
+      "scanned": false,
+      "preconditions": [],
+      "expected_decision": "REVIEW",
+      "expected_rule_codes": [
+        "PO_RESOLVED:review"
+      ],
+      "expected_facts": {
+        "vendor_printed_name": "Saffron Office Systems Pvt. Ltd.",
+        "invoice_number": "INV-1099",
+        "invoice_date": "2026-08-29",
+        "currency": "INR",
+        "subtotal": "9000.00",
+        "tax_total": "1620.00",
+        "gross_total": "10620.00",
+        "explicit_po_number": "PO-9999"
+      },
+      "note": ""
+    },
+    {
+      "id": "r7-unreadable-scan",
+      "filename": "r7-unreadable-scan.pdf",
+      "layout": "statement",
+      "scanned": true,
+      "preconditions": [],
+      "expected_decision": "REVIEW_OR_FAILED",
+      "expected_rule_codes": [
+        "FIELDS_PRESENT:review"
+      ],
+      "expected_facts": {
+        "vendor_printed_name": "DELTA FACILITY SERVICES PVT LTD",
+        "invoice_number": "DFS-7799",
+        "invoice_date": "2026-08-30",
+        "currency": "INR",
+        "subtotal": "15000.00",
+        "tax_total": "2700.00",
+        "gross_total": "17700.00",
+        "explicit_po_number": null
+      },
+      "note": "The exact outcome depends on how much OCR recovers; either a REVIEW with missing fields or a FAILED run with document_unreadable is correct."
+    }
+  ]
+}

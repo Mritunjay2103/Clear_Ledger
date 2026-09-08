@@ -1,0 +1,41 @@
+# Render blueprint. Creates the service, the persistent disk and the health
+# check in one step, so the disk cannot be forgotten — losing it means losing
+# every processed run on the first restart.
+#
+# Deploy: Render Dashboard -> New -> Blueprint -> pick this repository.
+# You are prompted for DEMO_USERNAME and DEMO_PASSWORD during creation; they are
+# never stored in this file.
+
+services:
+  - type: web
+    name: clearledger
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    # A disk requires a paid plan; `free` cannot attach one. 512 MB is enough
+    # for the samples; move to 1c-2g if OCR is exercised heavily, since
+    # rasterising a page is the only memory-hungry step.
+    plan: 0.5c-512mb
+    region: singapore # oregon | ohio | virginia | frankfurt | singapore
+    branch: main
+    healthCheckPath: /api/readiness
+
+    # SQLite has exactly one writer. A second instance would corrupt the ledger,
+    # so this is a correctness constraint rather than a cost decision.
+    numInstances: 1
+
+    disk:
+      name: clearledger-data
+      mountPath: /data # Must match DATA_DIR below.
+      sizeGB: 1 # The database plus a few thousand invoice PDFs.
+
+    envVars:
+      - key: APP_ENV
+        value: production # Refuses to start without reviewer credentials.
+      - key: DATA_DIR
+        value: /data
+      - key: EXTRACTION_PROVIDER
+        value: rules # Deterministic parser: no key, no model download.
+      - key: DEMO_USERNAME
+        sync: false # Prompted for in the dashboard.
+      - key: DEMO_PASSWORD
+        sync: false # At least 12 characters. There is no default.
