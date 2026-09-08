@@ -79,6 +79,35 @@ So: a free instance can demonstrate the application, but it cannot keep
 anything. If the demonstration link must still hold its runs tomorrow, it needs
 a paid plan with a disk.
 
+### Running on the free plan anyway
+
+`render.yaml` ships configured for `plan: free`, which is a deliberate trade for
+a demonstration link that a person drives live. What is worth knowing precisely:
+
+**What still works.** All of it, within a session. Every sample, OCR, matching,
+the policy, corrections and lineage, exports, and the cumulative-budget sequence
+— provided E2 parts 1 and 2 are processed in the same sitting as part 3, which
+is how the demo script runs anyway. Reference data is never at risk: it is
+re-seeded on every boot from the CSVs baked into the image, so vendors and
+purchase orders are always present.
+
+**What is lost on a restart, redeploy or spin-down.** Processed runs, uploaded
+PDFs, and the reservation ledger. Render also documents that it may restart a
+free service at any time, so this is not only under your control.
+
+**The cold start.** After 15 minutes without traffic the service sleeps, and the
+next visitor waits about a minute. An external uptime pinger hitting
+`/api/health` every 10 minutes avoids that; the route is deliberately
+unauthenticated so a prober can reach it. Note the arithmetic before you set one
+up: a free workspace gets 750 instance-hours a month and a service that never
+sleeps consumes about 744, so this works for exactly one always-on free service
+and nothing else.
+
+**How to reverse it.** Change `plan` to `0.5c-512mb` and uncomment the `disk:`
+block in `render.yaml`. Nothing in the application changes — `DATA_DIR` is
+already `/data`, which is a plain directory without a disk and a mount point
+with one.
+
 ### Steps
 
 Render deploys from a git repository, so the code has to be on GitHub, GitLab

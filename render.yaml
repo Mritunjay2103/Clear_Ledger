@@ -1,20 +1,25 @@
-# Render blueprint. Creates the service, the persistent disk and the health
-# check in one step, so the disk cannot be forgotten — losing it means losing
-# every processed run on the first restart.
+# Render blueprint. Creates the service, the health check and the environment in
+# one step.
 #
 # Deploy: Render Dashboard -> New -> Blueprint -> pick this repository.
 # You are prompted for DEMO_USERNAME and DEMO_PASSWORD during creation; they are
 # never stored in this file.
+#
+# Configured for the FREE plan, which has no persistent storage. See the note on
+# `plan` below for what that costs and how to reverse it.
 
 services:
   - type: web
     name: clearledger
     runtime: docker
     dockerfilePath: ./Dockerfile
-    # A disk requires a paid plan; `free` cannot attach one. 512 MB is enough
-    # for the samples; move to 1c-2g if OCR is exercised heavily, since
-    # rasterising a page is the only memory-hungry step.
-    plan: 0.5c-512mb
+    # Free: 0.1 CPU / 512 MB, and NO persistent disk — Render does not allow one
+    # on this plan. The filesystem is wiped on every restart, redeploy and
+    # spin-down, so processed runs and uploaded PDFs do not survive. Reference
+    # data does: it is re-seeded from the CSVs in the image on every boot.
+    #
+    # To keep history, move to `0.5c-512mb` and restore the `disk:` block below.
+    plan: free
     region: singapore # oregon | ohio | virginia | frankfurt | singapore
     branch: main
     healthCheckPath: /api/readiness
@@ -23,10 +28,12 @@ services:
     # so this is a correctness constraint rather than a cost decision.
     numInstances: 1
 
-    disk:
-      name: clearledger-data
-      mountPath: /data # Must match DATA_DIR below.
-      sizeGB: 1 # The database plus a few thousand invoice PDFs.
+    # Persistence, on a paid plan. Uncomment together with the plan change above;
+    # mountPath must match DATA_DIR.
+    # disk:
+    #   name: clearledger-data
+    #   mountPath: /data
+    #   sizeGB: 1
 
     envVars:
       - key: APP_ENV
