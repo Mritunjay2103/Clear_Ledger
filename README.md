@@ -3,8 +3,7 @@
 **Invoice decisions with evidence.**
 
 ClearLedger turns a vendor invoice PDF into an explainable processing decision
-against a purchase-order dataset. It is a one-week prototype built for the Zamp
-analyst take-home (problem PS-1, invoice processing).
+against a purchase-order dataset. It is a one-week prototype.
 
 > **APPROVED does not send money.** An approval reserves a commitment against a
 > purchase order so that later invoices see the reduced balance. Nothing in this
@@ -220,7 +219,7 @@ render.yaml          Render blueprint: service, persistent disk, health check
 | --- | --- |
 | [docs/PROCESS.md](docs/PROCESS.md) | The pipeline as a diagram, with the failure and uncertainty branches |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Components, data boundaries, the queue, atomic approval, why this shape |
-| [docs/ASSUMPTIONS.md](docs/ASSUMPTIONS.md) | Every domain decision that could reasonably have gone another way |
+| [docs/ASSUMPTIONS.md](docs/ASSUMPTIONS.md) | Scope boundaries, and every domain decision that could reasonably have gone another way |
 | [docs/TEST_CASES.md](docs/TEST_CASES.md) | The scenarios, their prerequisites, and the rule codes each should produce |
 | [docs/VALIDATION.md](docs/VALIDATION.md) | Commands actually run, actual output, and what remains unverified |
 | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Docker, hosting on Render, persistent disk, reviewer access |
@@ -229,25 +228,6 @@ render.yaml          Render blueprint: service, persistent disk, health check
 | [docs/BUSINESS_IMPACT.md](docs/BUSINESS_IMPACT.md) | KPIs worth measuring, and which numbers here are assumptions |
 | [docs/SUBMISSION.md](docs/SUBMISSION.md) | Draft submission email with placeholders |
 | [docs/BUILD_STATUS.md](docs/BUILD_STATUS.md) | What is done, what is not, and the next concrete step |
-
-## Limitations
-
-These are deliberate boundaries for a one-week prototype, not oversights. The
-full list with reasoning is in [docs/ASSUMPTIONS.md](docs/ASSUMPTIONS.md).
-
-- **Invoice-to-PO comparison only.** There is no goods-receipt dataset, so this
-  is not three-way matching and does not claim to be.
-- **INR is the only currency evaluated automatically.** Others are read and
-  displayed, then routed to review.
-- **Credit notes are recognised but not processed.** They go to review.
-- **Reference data is read-only in the UI.** Edit the CSVs and run
-  `python scripts/manage.py validate-reference` then `seed`.
-- **Approvals cannot be revoked.** A run holding a live commitment cannot be
-  corrected, because replacing a commitment safely needs a revoke-and-reapprove
-  workflow that does not exist here.
-- **Single process, single SQLite file.** Fine for one reviewer; it is not a
-  multi-worker deployment. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-- **No tax compliance, vendor legitimacy, or bank detail verification.**
 
 ## AI tool disclosure
 

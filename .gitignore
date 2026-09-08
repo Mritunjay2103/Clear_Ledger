@@ -3,6 +3,9 @@
 .env.*
 !.env.example
 
+# Local working notes, not part of the deliverable
+prompts.md
+
 # Runtime data: uploads, SQLite database, temporary render files
 runtime-data/
 data/runtime/
