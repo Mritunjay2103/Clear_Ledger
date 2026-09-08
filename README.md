@@ -228,16 +228,3 @@ render.yaml          Render blueprint: service, persistent disk, health check
 | [docs/BUSINESS_IMPACT.md](docs/BUSINESS_IMPACT.md) | KPIs worth measuring, and which numbers here are assumptions |
 | [docs/SUBMISSION.md](docs/SUBMISSION.md) | Draft submission email with placeholders |
 | [docs/BUILD_STATUS.md](docs/BUILD_STATUS.md) | What is done, what is not, and the next concrete step |
-
-## AI tool disclosure
-
-This project was built with Cursor, using an AI agent for implementation across
-the whole codebase, under my direction and review. The architecture, domain
-rules, tolerances, and edge-case design are decisions I made and can defend; the
-agent wrote code against them, and I ran and inspected the results. Model-based
-extraction is an optional runtime mode of the product itself, described above and
-in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-
-No measured accuracy, latency benchmark, or cost saving is claimed anywhere in
-this repository except where [docs/VALIDATION.md](docs/VALIDATION.md) reports a
-number actually observed on the machine and date stated there.
